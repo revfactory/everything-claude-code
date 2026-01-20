@@ -1,47 +1,47 @@
-# Performance Optimization
+# 성능 최적화
 
-## Model Selection Strategy
+## 모델 선택 전략
 
-**Haiku 4.5** (90% of Sonnet capability, 3x cost savings):
-- Lightweight agents with frequent invocation
-- Pair programming and code generation
-- Worker agents in multi-agent systems
+**Haiku 4.5** (Sonnet 능력의 90%, 비용 3배 절감):
+- 자주 호출되는 경량 에이전트
+- 페어 프로그래밍과 코드 생성
+- 멀티 에이전트 시스템의 워커 에이전트
 
-**Sonnet 4.5** (Best coding model):
-- Main development work
-- Orchestrating multi-agent workflows
-- Complex coding tasks
+**Sonnet 4.5** (최고의 코딩 모델):
+- 메인 개발 작업
+- 멀티 에이전트 워크플로우 오케스트레이션
+- 복잡한 코딩 작업
 
-**Opus 4.5** (Deepest reasoning):
-- Complex architectural decisions
-- Maximum reasoning requirements
-- Research and analysis tasks
+**Opus 4.5** (가장 깊은 추론):
+- 복잡한 아키텍처 결정
+- 최대 추론 요구사항
+- 리서치 및 분석 작업
 
-## Context Window Management
+## 컨텍스트 윈도우 관리
 
-Avoid last 20% of context window for:
-- Large-scale refactoring
-- Feature implementation spanning multiple files
-- Debugging complex interactions
+컨텍스트 윈도우의 마지막 20%에서 피해야 할 작업:
+- 대규모 리팩토링
+- 여러 파일에 걸친 기능 구현
+- 복잡한 상호작용 디버깅
 
-Lower context sensitivity tasks:
-- Single-file edits
-- Independent utility creation
-- Documentation updates
-- Simple bug fixes
+낮은 컨텍스트 민감도 작업:
+- 단일 파일 편집
+- 독립적인 유틸리티 생성
+- 문서 업데이트
+- 간단한 버그 수정
 
 ## Ultrathink + Plan Mode
 
-For complex tasks requiring deep reasoning:
-1. Use `ultrathink` for enhanced thinking
-2. Enable **Plan Mode** for structured approach
-3. "Rev the engine" with multiple critique rounds
-4. Use split role sub-agents for diverse analysis
+깊은 추론이 필요한 복잡한 작업:
+1. 향상된 사고를 위해 `ultrathink` 사용
+2. 구조화된 접근을 위해 **Plan Mode** 활성화
+3. 여러 번의 비평 라운드로 "엔진 예열"
+4. 다양한 분석을 위해 역할 분리 서브 에이전트 사용
 
-## Build Troubleshooting
+## 빌드 문제 해결
 
-If build fails:
-1. Use **build-error-resolver** agent
-2. Analyze error messages
-3. Fix incrementally
-4. Verify after each fix
+빌드 실패 시:
+1. **build-error-resolver** 에이전트 사용
+2. 오류 메시지 분석
+3. 점진적으로 수정
+4. 각 수정 후 검증

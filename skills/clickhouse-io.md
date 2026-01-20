@@ -1,26 +1,26 @@
 ---
 name: clickhouse-io
-description: ClickHouse database patterns, query optimization, analytics, and data engineering best practices for high-performance analytical workloads.
+description: ClickHouse 데이터베이스 패턴, 쿼리 최적화, 분석, 고성능 분석 워크로드를 위한 데이터 엔지니어링 모범 사례.
 ---
 
-# ClickHouse Analytics Patterns
+# ClickHouse 분석 패턴
 
-ClickHouse-specific patterns for high-performance analytics and data engineering.
+고성능 분석과 데이터 엔지니어링을 위한 ClickHouse 전용 패턴.
 
-## Overview
+## 개요
 
-ClickHouse is a column-oriented database management system (DBMS) for online analytical processing (OLAP). It's optimized for fast analytical queries on large datasets.
+ClickHouse는 온라인 분석 처리(OLAP)를 위한 컬럼 지향 데이터베이스 관리 시스템(DBMS)입니다. 대규모 데이터셋에서 빠른 분석 쿼리에 최적화되어 있습니다.
 
-**Key Features:**
-- Column-oriented storage
-- Data compression
-- Parallel query execution
-- Distributed queries
-- Real-time analytics
+**주요 기능:**
+- 컬럼 지향 저장소
+- 데이터 압축
+- 병렬 쿼리 실행
+- 분산 쿼리
+- 실시간 분석
 
-## Table Design Patterns
+## 테이블 설계 패턴
 
-### MergeTree Engine (Most Common)
+### MergeTree 엔진 (가장 일반적)
 
 ```sql
 CREATE TABLE markets_analytics (
@@ -38,10 +38,10 @@ ORDER BY (date, market_id)
 SETTINGS index_granularity = 8192;
 ```
 
-### ReplacingMergeTree (Deduplication)
+### ReplacingMergeTree (중복 제거)
 
 ```sql
--- For data that may have duplicates (e.g., from multiple sources)
+-- 중복이 있을 수 있는 데이터용 (예: 여러 소스에서)
 CREATE TABLE user_events (
     event_id String,
     user_id String,
@@ -54,10 +54,10 @@ ORDER BY (user_id, event_id, timestamp)
 PRIMARY KEY (user_id, event_id);
 ```
 
-### AggregatingMergeTree (Pre-aggregation)
+### AggregatingMergeTree (사전 집계)
 
 ```sql
--- For maintaining aggregated metrics
+-- 집계된 메트릭 유지용
 CREATE TABLE market_stats_hourly (
     hour DateTime,
     market_id String,
@@ -68,7 +68,7 @@ CREATE TABLE market_stats_hourly (
 PARTITION BY toYYYYMM(hour)
 ORDER BY (hour, market_id);
 
--- Query aggregated data
+-- 집계된 데이터 쿼리
 SELECT
     hour,
     market_id,
@@ -81,12 +81,12 @@ GROUP BY hour, market_id
 ORDER BY hour DESC;
 ```
 
-## Query Optimization Patterns
+## 쿼리 최적화 패턴
 
-### Efficient Filtering
+### 효율적인 필터링
 
 ```sql
--- ✅ GOOD: Use indexed columns first
+-- 좋음: 인덱스된 컬럼 먼저 사용
 SELECT *
 FROM markets_analytics
 WHERE date >= '2025-01-01'
@@ -95,7 +95,7 @@ WHERE date >= '2025-01-01'
 ORDER BY date DESC
 LIMIT 100;
 
--- ❌ BAD: Filter on non-indexed columns first
+-- 나쁨: 인덱스되지 않은 컬럼 먼저 필터
 SELECT *
 FROM markets_analytics
 WHERE volume > 1000
@@ -103,10 +103,10 @@ WHERE volume > 1000
   AND date >= '2025-01-01';
 ```
 
-### Aggregations
+### 집계
 
 ```sql
--- ✅ GOOD: Use ClickHouse-specific aggregation functions
+-- 좋음: ClickHouse 전용 집계 함수 사용
 SELECT
     toStartOfDay(created_at) AS day,
     market_id,
@@ -119,7 +119,7 @@ WHERE created_at >= today() - INTERVAL 7 DAY
 GROUP BY day, market_id
 ORDER BY day DESC, total_volume DESC;
 
--- ✅ Use quantile for percentiles (more efficient than percentile)
+-- 백분위수에 quantile 사용 (percentile보다 효율적)
 SELECT
     quantile(0.50)(trade_size) AS median,
     quantile(0.95)(trade_size) AS p95,
@@ -128,10 +128,10 @@ FROM trades
 WHERE created_at >= now() - INTERVAL 1 HOUR;
 ```
 
-### Window Functions
+### 윈도우 함수
 
 ```sql
--- Calculate running totals
+-- 누적 합계 계산
 SELECT
     date,
     market_id,
@@ -146,9 +146,9 @@ WHERE date >= today() - INTERVAL 30 DAY
 ORDER BY market_id, date;
 ```
 
-## Data Insertion Patterns
+## 데이터 삽입 패턴
 
-### Bulk Insert (Recommended)
+### 벌크 삽입 (권장)
 
 ```typescript
 import { ClickHouse } from 'clickhouse'
@@ -162,7 +162,7 @@ const clickhouse = new ClickHouse({
   }
 })
 
-// ✅ Batch insert (efficient)
+// 배치 삽입 (효율적)
 async function bulkInsertTrades(trades: Trade[]) {
   const values = trades.map(trade => `(
     '${trade.id}',
@@ -178,19 +178,19 @@ async function bulkInsertTrades(trades: Trade[]) {
   `).toPromise()
 }
 
-// ❌ Individual inserts (slow)
+// 개별 삽입 (느림)
 async function insertTrade(trade: Trade) {
-  // Don't do this in a loop!
+  // 루프에서 이렇게 하지 마세요!
   await clickhouse.query(`
     INSERT INTO trades VALUES ('${trade.id}', ...)
   `).toPromise()
 }
 ```
 
-### Streaming Insert
+### 스트리밍 삽입
 
 ```typescript
-// For continuous data ingestion
+// 지속적인 데이터 수집용
 import { createWriteStream } from 'fs'
 import { pipeline } from 'stream/promises'
 
@@ -205,12 +205,12 @@ async function streamInserts() {
 }
 ```
 
-## Materialized Views
+## 구체화된 뷰
 
-### Real-time Aggregations
+### 실시간 집계
 
 ```sql
--- Create materialized view for hourly stats
+-- 시간별 통계를 위한 구체화된 뷰 생성
 CREATE MATERIALIZED VIEW market_stats_hourly_mv
 TO market_stats_hourly
 AS SELECT
@@ -222,7 +222,7 @@ AS SELECT
 FROM trades
 GROUP BY hour, market_id;
 
--- Query the materialized view
+-- 구체화된 뷰 쿼리
 SELECT
     hour,
     market_id,
@@ -234,12 +234,12 @@ WHERE hour >= now() - INTERVAL 24 HOUR
 GROUP BY hour, market_id;
 ```
 
-## Performance Monitoring
+## 성능 모니터링
 
-### Query Performance
+### 쿼리 성능
 
 ```sql
--- Check slow queries
+-- 느린 쿼리 확인
 SELECT
     query_id,
     user,
@@ -256,10 +256,10 @@ ORDER BY query_duration_ms DESC
 LIMIT 10;
 ```
 
-### Table Statistics
+### 테이블 통계
 
 ```sql
--- Check table sizes
+-- 테이블 크기 확인
 SELECT
     database,
     table,
@@ -272,12 +272,12 @@ GROUP BY database, table
 ORDER BY sum(bytes) DESC;
 ```
 
-## Common Analytics Queries
+## 일반적인 분석 쿼리
 
-### Time Series Analysis
+### 시계열 분석
 
 ```sql
--- Daily active users
+-- 일일 활성 사용자
 SELECT
     toDate(timestamp) AS date,
     uniq(user_id) AS daily_active_users
@@ -286,7 +286,7 @@ WHERE timestamp >= today() - INTERVAL 30 DAY
 GROUP BY date
 ORDER BY date;
 
--- Retention analysis
+-- 리텐션 분석
 SELECT
     signup_date,
     countIf(days_since_signup = 0) AS day_0,
@@ -306,10 +306,10 @@ GROUP BY signup_date
 ORDER BY signup_date DESC;
 ```
 
-### Funnel Analysis
+### 퍼널 분석
 
 ```sql
--- Conversion funnel
+-- 전환 퍼널
 SELECT
     countIf(step = 'viewed_market') AS viewed,
     countIf(step = 'clicked_trade') AS clicked,
@@ -327,10 +327,10 @@ FROM (
 GROUP BY session_id;
 ```
 
-### Cohort Analysis
+### 코호트 분석
 
 ```sql
--- User cohorts by signup month
+-- 가입월별 사용자 코호트
 SELECT
     toStartOfMonth(signup_date) AS cohort,
     toStartOfMonth(activity_date) AS month,
@@ -347,17 +347,17 @@ GROUP BY cohort, month, months_since_signup
 ORDER BY cohort, months_since_signup;
 ```
 
-## Data Pipeline Patterns
+## 데이터 파이프라인 패턴
 
-### ETL Pattern
+### ETL 패턴
 
 ```typescript
-// Extract, Transform, Load
+// 추출, 변환, 적재
 async function etlPipeline() {
-  // 1. Extract from source
+  // 1. 소스에서 추출
   const rawData = await extractFromPostgres()
 
-  // 2. Transform
+  // 2. 변환
   const transformed = rawData.map(row => ({
     date: new Date(row.created_at).toISOString().split('T')[0],
     market_id: row.market_slug,
@@ -365,18 +365,18 @@ async function etlPipeline() {
     trades: parseInt(row.trade_count)
   }))
 
-  // 3. Load to ClickHouse
+  // 3. ClickHouse에 적재
   await bulkInsertToClickHouse(transformed)
 }
 
-// Run periodically
-setInterval(etlPipeline, 60 * 60 * 1000)  // Every hour
+// 주기적으로 실행
+setInterval(etlPipeline, 60 * 60 * 1000)  // 매시간
 ```
 
-### Change Data Capture (CDC)
+### 변경 데이터 캡처 (CDC)
 
 ```typescript
-// Listen to PostgreSQL changes and sync to ClickHouse
+// PostgreSQL 변경사항을 듣고 ClickHouse에 동기화
 import { Client } from 'pg'
 
 const pgClient = new Client({ connectionString: process.env.DATABASE_URL })
@@ -397,33 +397,33 @@ pgClient.on('notification', async (msg) => {
 })
 ```
 
-## Best Practices
+## 모범 사례
 
-### 1. Partitioning Strategy
-- Partition by time (usually month or day)
-- Avoid too many partitions (performance impact)
-- Use DATE type for partition key
+### 1. 파티셔닝 전략
+- 시간별 파티션 (보통 월 또는 일)
+- 너무 많은 파티션 피하기 (성능 영향)
+- 파티션 키에 DATE 타입 사용
 
-### 2. Ordering Key
-- Put most frequently filtered columns first
-- Consider cardinality (high cardinality first)
-- Order impacts compression
+### 2. 정렬 키
+- 가장 자주 필터링되는 컬럼을 먼저
+- 카디널리티 고려 (높은 카디널리티 먼저)
+- 순서가 압축에 영향
 
-### 3. Data Types
-- Use smallest appropriate type (UInt32 vs UInt64)
-- Use LowCardinality for repeated strings
-- Use Enum for categorical data
+### 3. 데이터 타입
+- 가장 작은 적절한 타입 사용 (UInt32 vs UInt64)
+- 반복되는 문자열에 LowCardinality 사용
+- 범주형 데이터에 Enum 사용
 
-### 4. Avoid
-- SELECT * (specify columns)
-- FINAL (merge data before query instead)
-- Too many JOINs (denormalize for analytics)
-- Small frequent inserts (batch instead)
+### 4. 피해야 할 것
+- SELECT * (컬럼 지정)
+- FINAL (쿼리 전 데이터 병합 대신)
+- 너무 많은 JOIN (분석을 위해 비정규화)
+- 작은 빈번한 삽입 (배치 대신)
 
-### 5. Monitoring
-- Track query performance
-- Monitor disk usage
-- Check merge operations
-- Review slow query log
+### 5. 모니터링
+- 쿼리 성능 추적
+- 디스크 사용량 모니터링
+- 병합 작업 확인
+- 느린 쿼리 로그 검토
 
-**Remember**: ClickHouse excels at analytical workloads. Design tables for your query patterns, batch inserts, and leverage materialized views for real-time aggregations.
+**기억하세요**: ClickHouse는 분석 워크로드에 탁월합니다. 쿼리 패턴에 맞게 테이블을 설계하고, 삽입을 배치로 하며, 실시간 집계를 위해 구체화된 뷰를 활용하세요.

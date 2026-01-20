@@ -1,33 +1,33 @@
 ---
 name: backend-patterns
-description: Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.
+description: 백엔드 아키텍처 패턴, API 설계, 데이터베이스 최적화, Node.js, Express, Next.js API 라우트를 위한 서버 사이드 모범 사례.
 ---
 
-# Backend Development Patterns
+# 백엔드 개발 패턴
 
-Backend architecture patterns and best practices for scalable server-side applications.
+확장 가능한 서버 사이드 애플리케이션을 위한 백엔드 아키텍처 패턴과 모범 사례.
 
-## API Design Patterns
+## API 설계 패턴
 
-### RESTful API Structure
+### RESTful API 구조
 
 ```typescript
-// ✅ Resource-based URLs
-GET    /api/markets                 # List resources
-GET    /api/markets/:id             # Get single resource
-POST   /api/markets                 # Create resource
-PUT    /api/markets/:id             # Replace resource
-PATCH  /api/markets/:id             # Update resource
-DELETE /api/markets/:id             # Delete resource
+// 리소스 기반 URL
+GET    /api/markets                 # 리소스 목록
+GET    /api/markets/:id             # 단일 리소스 조회
+POST   /api/markets                 # 리소스 생성
+PUT    /api/markets/:id             # 리소스 교체
+PATCH  /api/markets/:id             # 리소스 업데이트
+DELETE /api/markets/:id             # 리소스 삭제
 
-// ✅ Query parameters for filtering, sorting, pagination
+// 필터링, 정렬, 페이지네이션을 위한 쿼리 파라미터
 GET /api/markets?status=active&sort=volume&limit=20&offset=0
 ```
 
-### Repository Pattern
+### 레포지토리 패턴
 
 ```typescript
-// Abstract data access logic
+// 데이터 접근 로직 추상화
 interface MarketRepository {
   findAll(filters?: MarketFilters): Promise<Market[]>
   findById(id: string): Promise<Market | null>
@@ -54,26 +54,26 @@ class SupabaseMarketRepository implements MarketRepository {
     return data
   }
 
-  // Other methods...
+  // 기타 메서드...
 }
 ```
 
-### Service Layer Pattern
+### 서비스 레이어 패턴
 
 ```typescript
-// Business logic separated from data access
+// 비즈니스 로직을 데이터 접근과 분리
 class MarketService {
   constructor(private marketRepo: MarketRepository) {}
 
   async searchMarkets(query: string, limit: number = 10): Promise<Market[]> {
-    // Business logic
+    // 비즈니스 로직
     const embedding = await generateEmbedding(query)
     const results = await this.vectorSearch(embedding, limit)
 
-    // Fetch full data
+    // 전체 데이터 조회
     const markets = await this.marketRepo.findByIds(results.map(r => r.id))
 
-    // Sort by similarity
+    // 유사도로 정렬
     return markets.sort((a, b) => {
       const scoreA = results.find(r => r.id === a.id)?.score || 0
       const scoreB = results.find(r => r.id === b.id)?.score || 0
@@ -82,15 +82,15 @@ class MarketService {
   }
 
   private async vectorSearch(embedding: number[], limit: number) {
-    // Vector search implementation
+    // 벡터 검색 구현
   }
 }
 ```
 
-### Middleware Pattern
+### 미들웨어 패턴
 
 ```typescript
-// Request/response processing pipeline
+// 요청/응답 처리 파이프라인
 export function withAuth(handler: NextApiHandler): NextApiHandler {
   return async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '')
@@ -109,18 +109,18 @@ export function withAuth(handler: NextApiHandler): NextApiHandler {
   }
 }
 
-// Usage
+// 사용 예
 export default withAuth(async (req, res) => {
-  // Handler has access to req.user
+  // 핸들러가 req.user에 접근 가능
 })
 ```
 
-## Database Patterns
+## 데이터베이스 패턴
 
-### Query Optimization
+### 쿼리 최적화
 
 ```typescript
-// ✅ GOOD: Select only needed columns
+// 좋음: 필요한 컬럼만 선택
 const { data } = await supabase
   .from('markets')
   .select('id, name, status, volume')
@@ -128,25 +128,25 @@ const { data } = await supabase
   .order('volume', { ascending: false })
   .limit(10)
 
-// ❌ BAD: Select everything
+// 나쁨: 모든 것 선택
 const { data } = await supabase
   .from('markets')
   .select('*')
 ```
 
-### N+1 Query Prevention
+### N+1 쿼리 방지
 
 ```typescript
-// ❌ BAD: N+1 query problem
+// 나쁨: N+1 쿼리 문제
 const markets = await getMarkets()
 for (const market of markets) {
-  market.creator = await getUser(market.creator_id)  // N queries
+  market.creator = await getUser(market.creator_id)  // N개 쿼리
 }
 
-// ✅ GOOD: Batch fetch
+// 좋음: 배치 조회
 const markets = await getMarkets()
 const creatorIds = markets.map(m => m.creator_id)
-const creators = await getUsers(creatorIds)  // 1 query
+const creators = await getUsers(creatorIds)  // 1개 쿼리
 const creatorMap = new Map(creators.map(c => [c.id, c]))
 
 markets.forEach(market => {
@@ -154,14 +154,14 @@ markets.forEach(market => {
 })
 ```
 
-### Transaction Pattern
+### 트랜잭션 패턴
 
 ```typescript
 async function createMarketWithPosition(
   marketData: CreateMarketDto,
   positionData: CreatePositionDto
 ) {
-  // Use Supabase transaction
+  // Supabase 트랜잭션 사용
   const { data, error } = await supabase.rpc('create_market_with_position', {
     market_data: marketData,
     position_data: positionData
@@ -171,7 +171,7 @@ async function createMarketWithPosition(
   return data
 }
 
-// SQL function in Supabase
+// Supabase SQL 함수
 CREATE OR REPLACE FUNCTION create_market_with_position(
   market_data jsonb,
   position_data jsonb
@@ -180,21 +180,21 @@ RETURNS jsonb
 LANGUAGE plpgsql
 AS $$
 BEGIN
-  -- Start transaction automatically
+  -- 트랜잭션 자동 시작
   INSERT INTO markets VALUES (market_data);
   INSERT INTO positions VALUES (position_data);
   RETURN jsonb_build_object('success', true);
 EXCEPTION
   WHEN OTHERS THEN
-    -- Rollback happens automatically
+    -- 롤백 자동 처리
     RETURN jsonb_build_object('success', false, 'error', SQLERRM);
 END;
 $$;
 ```
 
-## Caching Strategies
+## 캐싱 전략
 
-### Redis Caching Layer
+### Redis 캐싱 레이어
 
 ```typescript
 class CachedMarketRepository implements MarketRepository {
@@ -204,18 +204,18 @@ class CachedMarketRepository implements MarketRepository {
   ) {}
 
   async findById(id: string): Promise<Market | null> {
-    // Check cache first
+    // 캐시 먼저 확인
     const cached = await this.redis.get(`market:${id}`)
 
     if (cached) {
       return JSON.parse(cached)
     }
 
-    // Cache miss - fetch from database
+    // 캐시 미스 - 데이터베이스에서 조회
     const market = await this.baseRepo.findById(id)
 
     if (market) {
-      // Cache for 5 minutes
+      // 5분간 캐시
       await this.redis.setex(`market:${id}`, 300, JSON.stringify(market))
     }
 
@@ -228,31 +228,31 @@ class CachedMarketRepository implements MarketRepository {
 }
 ```
 
-### Cache-Aside Pattern
+### Cache-Aside 패턴
 
 ```typescript
 async function getMarketWithCache(id: string): Promise<Market> {
   const cacheKey = `market:${id}`
 
-  // Try cache
+  // 캐시 시도
   const cached = await redis.get(cacheKey)
   if (cached) return JSON.parse(cached)
 
-  // Cache miss - fetch from DB
+  // 캐시 미스 - DB에서 조회
   const market = await db.markets.findUnique({ where: { id } })
 
   if (!market) throw new Error('Market not found')
 
-  // Update cache
+  // 캐시 업데이트
   await redis.setex(cacheKey, 300, JSON.stringify(market))
 
   return market
 }
 ```
 
-## Error Handling Patterns
+## 오류 처리 패턴
 
-### Centralized Error Handler
+### 중앙집중식 오류 핸들러
 
 ```typescript
 class ApiError extends Error {
@@ -277,21 +277,21 @@ export function errorHandler(error: unknown, req: Request): Response {
   if (error instanceof z.ZodError) {
     return NextResponse.json({
       success: false,
-      error: 'Validation failed',
+      error: '검증 실패',
       details: error.errors
     }, { status: 400 })
   }
 
-  // Log unexpected errors
+  // 예상치 못한 오류 로깅
   console.error('Unexpected error:', error)
 
   return NextResponse.json({
     success: false,
-    error: 'Internal server error'
+    error: '내부 서버 오류'
   }, { status: 500 })
 }
 
-// Usage
+// 사용 예
 export async function GET(request: Request) {
   try {
     const data = await fetchData()
@@ -302,7 +302,7 @@ export async function GET(request: Request) {
 }
 ```
 
-### Retry with Exponential Backoff
+### 지수 백오프 재시도
 
 ```typescript
 async function fetchWithRetry<T>(
@@ -318,7 +318,7 @@ async function fetchWithRetry<T>(
       lastError = error as Error
 
       if (i < maxRetries - 1) {
-        // Exponential backoff: 1s, 2s, 4s
+        // 지수 백오프: 1초, 2초, 4초
         const delay = Math.pow(2, i) * 1000
         await new Promise(resolve => setTimeout(resolve, delay))
       }
@@ -328,13 +328,13 @@ async function fetchWithRetry<T>(
   throw lastError!
 }
 
-// Usage
+// 사용 예
 const data = await fetchWithRetry(() => fetchFromAPI())
 ```
 
-## Authentication & Authorization
+## 인증 & 인가
 
-### JWT Token Validation
+### JWT 토큰 검증
 
 ```typescript
 import jwt from 'jsonwebtoken'
@@ -358,13 +358,13 @@ export async function requireAuth(request: Request) {
   const token = request.headers.get('authorization')?.replace('Bearer ', '')
 
   if (!token) {
-    throw new ApiError(401, 'Missing authorization token')
+    throw new ApiError(401, '인증 토큰이 없습니다')
   }
 
   return verifyToken(token)
 }
 
-// Usage in API route
+// API 라우트에서 사용
 export async function GET(request: Request) {
   const user = await requireAuth(request)
 
@@ -374,7 +374,7 @@ export async function GET(request: Request) {
 }
 ```
 
-### Role-Based Access Control
+### 역할 기반 접근 제어
 
 ```typescript
 type Permission = 'read' | 'write' | 'delete' | 'admin'
@@ -399,22 +399,22 @@ export function requirePermission(permission: Permission) {
     const user = await requireAuth(request)
 
     if (!hasPermission(user, permission)) {
-      throw new ApiError(403, 'Insufficient permissions')
+      throw new ApiError(403, '권한이 없습니다')
     }
 
     return user
   }
 }
 
-// Usage
+// 사용 예
 export const DELETE = requirePermission('delete')(async (request: Request) => {
-  // Handler with permission check
+  // 권한 검사가 포함된 핸들러
 })
 ```
 
-## Rate Limiting
+## 레이트 리미팅
 
-### Simple In-Memory Rate Limiter
+### 간단한 인메모리 레이트 리미터
 
 ```typescript
 class RateLimiter {
@@ -428,14 +428,14 @@ class RateLimiter {
     const now = Date.now()
     const requests = this.requests.get(identifier) || []
 
-    // Remove old requests outside window
+    // 윈도우 밖의 오래된 요청 제거
     const recentRequests = requests.filter(time => now - time < windowMs)
 
     if (recentRequests.length >= maxRequests) {
-      return false  // Rate limit exceeded
+      return false  // 레이트 리밋 초과
     }
 
-    // Add current request
+    // 현재 요청 추가
     recentRequests.push(now)
     this.requests.set(identifier, recentRequests)
 
@@ -448,21 +448,21 @@ const limiter = new RateLimiter()
 export async function GET(request: Request) {
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
 
-  const allowed = await limiter.checkLimit(ip, 100, 60000)  // 100 req/min
+  const allowed = await limiter.checkLimit(ip, 100, 60000)  // 분당 100 요청
 
   if (!allowed) {
     return NextResponse.json({
-      error: 'Rate limit exceeded'
+      error: '레이트 리밋 초과'
     }, { status: 429 })
   }
 
-  // Continue with request
+  // 요청 계속 처리
 }
 ```
 
-## Background Jobs & Queues
+## 백그라운드 작업 & 큐
 
-### Simple Queue Pattern
+### 간단한 큐 패턴
 
 ```typescript
 class JobQueue<T> {
@@ -494,11 +494,11 @@ class JobQueue<T> {
   }
 
   private async execute(job: T): Promise<void> {
-    // Job execution logic
+    // 작업 실행 로직
   }
 }
 
-// Usage for indexing markets
+// 마켓 인덱싱 사용 예
 interface IndexJob {
   marketId: string
 }
@@ -508,16 +508,16 @@ const indexQueue = new JobQueue<IndexJob>()
 export async function POST(request: Request) {
   const { marketId } = await request.json()
 
-  // Add to queue instead of blocking
+  // 블로킹 대신 큐에 추가
   await indexQueue.add({ marketId })
 
-  return NextResponse.json({ success: true, message: 'Job queued' })
+  return NextResponse.json({ success: true, message: '작업이 큐에 추가됨' })
 }
 ```
 
-## Logging & Monitoring
+## 로깅 & 모니터링
 
-### Structured Logging
+### 구조화된 로깅
 
 ```typescript
 interface LogContext {
@@ -559,11 +559,11 @@ class Logger {
 
 const logger = new Logger()
 
-// Usage
+// 사용 예
 export async function GET(request: Request) {
   const requestId = crypto.randomUUID()
 
-  logger.info('Fetching markets', {
+  logger.info('마켓 조회 중', {
     requestId,
     method: 'GET',
     path: '/api/markets'
@@ -573,10 +573,10 @@ export async function GET(request: Request) {
     const markets = await fetchMarkets()
     return NextResponse.json({ success: true, data: markets })
   } catch (error) {
-    logger.error('Failed to fetch markets', error as Error, { requestId })
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+    logger.error('마켓 조회 실패', error as Error, { requestId })
+    return NextResponse.json({ error: '내부 오류' }, { status: 500 })
   }
 }
 ```
 
-**Remember**: Backend patterns enable scalable, maintainable server-side applications. Choose patterns that fit your complexity level.
+**기억하세요**: 백엔드 패턴은 확장 가능하고 유지보수 가능한 서버 사이드 애플리케이션을 가능하게 합니다. 복잡도 수준에 맞는 패턴을 선택하세요.

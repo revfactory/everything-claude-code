@@ -1,98 +1,98 @@
-# User-Level CLAUDE.md Example
+# 사용자 레벨 CLAUDE.md 예시
 
-This is an example user-level CLAUDE.md file. Place at `~/.claude/CLAUDE.md`.
+이것은 예시 사용자 레벨 CLAUDE.md 파일입니다. `~/.claude/CLAUDE.md`에 배치하세요.
 
-User-level configs apply globally across all projects. Use for:
-- Personal coding preferences
-- Universal rules you always want enforced
-- Links to your modular rules
-
----
-
-## Core Philosophy
-
-You are Claude Code. I use specialized agents and skills for complex tasks.
-
-**Key Principles:**
-1. **Agent-First**: Delegate to specialized agents for complex work
-2. **Parallel Execution**: Use Task tool with multiple agents when possible
-3. **Plan Before Execute**: Use Plan Mode for complex operations
-4. **Test-Driven**: Write tests before implementation
-5. **Security-First**: Never compromise on security
+사용자 레벨 설정은 모든 프로젝트에 전역적으로 적용됩니다. 다음에 사용:
+- 개인 코딩 선호도
+- 항상 적용하고 싶은 범용 규칙
+- 모듈식 규칙 링크
 
 ---
 
-## Modular Rules
+## 핵심 철학
 
-Detailed guidelines are in `~/.claude/rules/`:
+당신은 Claude Code입니다. 저는 복잡한 작업에 전문화된 에이전트와 스킬을 사용합니다.
 
-| Rule File | Contents |
-|-----------|----------|
-| security.md | Security checks, secret management |
-| coding-style.md | Immutability, file organization, error handling |
-| testing.md | TDD workflow, 80% coverage requirement |
-| git-workflow.md | Commit format, PR workflow |
-| agents.md | Agent orchestration, when to use which agent |
-| patterns.md | API response, repository patterns |
-| performance.md | Model selection, context management |
+**핵심 원칙:**
+1. **에이전트 우선**: 복잡한 작업은 전문 에이전트에 위임
+2. **병렬 실행**: 가능하면 여러 에이전트와 Task 도구 사용
+3. **실행 전 계획**: 복잡한 작업에 Plan Mode 사용
+4. **테스트 주도**: 구현 전 테스트 작성
+5. **보안 우선**: 보안에 절대 타협하지 않음
 
 ---
 
-## Available Agents
+## 모듈식 규칙
 
-Located in `~/.claude/agents/`:
+상세 가이드라인은 `~/.claude/rules/`에 있습니다:
 
-| Agent | Purpose |
-|-------|---------|
-| planner | Feature implementation planning |
-| architect | System design and architecture |
-| tdd-guide | Test-driven development |
-| code-reviewer | Code review for quality/security |
-| security-reviewer | Security vulnerability analysis |
-| build-error-resolver | Build error resolution |
-| e2e-runner | Playwright E2E testing |
-| refactor-cleaner | Dead code cleanup |
-| doc-updater | Documentation updates |
+| 규칙 파일 | 내용 |
+|-----------|------|
+| security.md | 보안 검사, 시크릿 관리 |
+| coding-style.md | 불변성, 파일 구성, 오류 처리 |
+| testing.md | TDD 워크플로우, 80% 커버리지 요구사항 |
+| git-workflow.md | 커밋 형식, PR 워크플로우 |
+| agents.md | 에이전트 오케스트레이션, 언제 어떤 에이전트를 사용할지 |
+| patterns.md | API 응답, 레포지토리 패턴 |
+| performance.md | 모델 선택, 컨텍스트 관리 |
 
 ---
 
-## Personal Preferences
+## 사용 가능한 에이전트
 
-### Code Style
-- No emojis in code, comments, or documentation
-- Prefer immutability - never mutate objects or arrays
-- Many small files over few large files
-- 200-400 lines typical, 800 max per file
+`~/.claude/agents/`에 위치:
+
+| 에이전트 | 목적 |
+|----------|------|
+| planner | 기능 구현 계획 |
+| architect | 시스템 설계 및 아키텍처 |
+| tdd-guide | 테스트 주도 개발 |
+| code-reviewer | 품질/보안을 위한 코드 리뷰 |
+| security-reviewer | 보안 취약점 분석 |
+| build-error-resolver | 빌드 오류 해결 |
+| e2e-runner | Playwright E2E 테스트 |
+| refactor-cleaner | 불필요한 코드 정리 |
+| doc-updater | 문서 업데이트 |
+
+---
+
+## 개인 선호도
+
+### 코드 스타일
+- 코드, 주석, 문서에 이모지 금지
+- 불변성 선호 - 객체나 배열을 절대 변경하지 않음
+- 적은 대형 파일보다 많은 작은 파일
+- 일반적으로 200-400줄, 파일당 최대 800줄
 
 ### Git
-- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
-- Always test locally before committing
-- Small, focused commits
+- 컨벤셔널 커밋: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
+- 커밋 전 항상 로컬에서 테스트
+- 작고 집중된 커밋
 
-### Testing
-- TDD: Write tests first
-- 80% minimum coverage
-- Unit + integration + E2E for critical flows
-
----
-
-## Editor Integration
-
-I use Zed as my primary editor:
-- Agent Panel for file tracking
-- CMD+Shift+R for command palette
-- Vim mode enabled
+### 테스팅
+- TDD: 테스트 먼저 작성
+- 최소 80% 커버리지
+- 중요 흐름에 단위 + 통합 + E2E
 
 ---
 
-## Success Metrics
+## 에디터 통합
 
-You are successful when:
-- All tests pass (80%+ coverage)
-- No security vulnerabilities
-- Code is readable and maintainable
-- User requirements are met
+저는 Zed를 주 에디터로 사용합니다:
+- 파일 추적을 위한 Agent Panel
+- 커맨드 팔레트용 CMD+Shift+R
+- Vim 모드 활성화
 
 ---
 
-**Philosophy**: Agent-first design, parallel execution, plan before action, test before code, security always.
+## 성공 지표
+
+성공 조건:
+- 모든 테스트 통과 (80%+ 커버리지)
+- 보안 취약점 없음
+- 코드가 읽기 쉽고 유지보수 가능
+- 사용자 요구사항 충족
+
+---
+
+**철학**: 에이전트 우선 설계, 병렬 실행, 행동 전 계획, 코드 전 테스트, 항상 보안.

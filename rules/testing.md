@@ -1,30 +1,30 @@
-# Testing Requirements
+# 테스트 요구사항
 
-## Minimum Test Coverage: 80%
+## 최소 테스트 커버리지: 80%
 
-Test Types (ALL required):
-1. **Unit Tests** - Individual functions, utilities, components
-2. **Integration Tests** - API endpoints, database operations
-3. **E2E Tests** - Critical user flows (Playwright)
+테스트 타입 (모두 필수):
+1. **단위 테스트** - 개별 함수, 유틸리티, 컴포넌트
+2. **통합 테스트** - API 엔드포인트, 데이터베이스 작업
+3. **E2E 테스트** - 중요 사용자 흐름 (Playwright)
 
-## Test-Driven Development
+## 테스트 주도 개발
 
-MANDATORY workflow:
-1. Write test first (RED)
-2. Run test - it should FAIL
-3. Write minimal implementation (GREEN)
-4. Run test - it should PASS
-5. Refactor (IMPROVE)
-6. Verify coverage (80%+)
+필수 워크플로우:
+1. 테스트 먼저 작성 (RED)
+2. 테스트 실행 - 실패해야 함
+3. 최소한의 구현 작성 (GREEN)
+4. 테스트 실행 - 통과해야 함
+5. 리팩토링 (IMPROVE)
+6. 커버리지 확인 (80%+)
 
-## Troubleshooting Test Failures
+## 테스트 실패 문제 해결
 
-1. Use **tdd-guide** agent
-2. Check test isolation
-3. Verify mocks are correct
-4. Fix implementation, not tests (unless tests are wrong)
+1. **tdd-guide** 에이전트 사용
+2. 테스트 격리 확인
+3. 모킹이 올바른지 검증
+4. 테스트가 아닌 구현 수정 (테스트가 잘못된 경우 제외)
 
-## Agent Support
+## 에이전트 지원
 
-- **tdd-guide** - Use PROACTIVELY for new features, enforces write-tests-first
-- **e2e-runner** - Playwright E2E testing specialist
+- **tdd-guide** - 새 기능에 적극적으로 사용, 테스트 먼저 작성 강제
+- **e2e-runner** - Playwright E2E 테스트 전문가

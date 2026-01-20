@@ -1,29 +1,29 @@
-# Build and Fix
+# 빌드 및 수정
 
-Incrementally fix TypeScript and build errors:
+TypeScript 및 빌드 오류를 점진적으로 수정:
 
-1. Run build: npm run build or pnpm build
+1. 빌드 실행: npm run build 또는 pnpm build
 
-2. Parse error output:
-   - Group by file
-   - Sort by severity
+2. 오류 출력 파싱:
+   - 파일별 그룹화
+   - 심각도별 정렬
 
-3. For each error:
-   - Show error context (5 lines before/after)
-   - Explain the issue
-   - Propose fix
-   - Apply fix
-   - Re-run build
-   - Verify error resolved
+3. 각 오류에 대해:
+   - 오류 컨텍스트 표시 (전후 5줄)
+   - 문제 설명
+   - 수정 제안
+   - 수정 적용
+   - 빌드 재실행
+   - 오류 해결 확인
 
-4. Stop if:
-   - Fix introduces new errors
-   - Same error persists after 3 attempts
-   - User requests pause
+4. 중지 조건:
+   - 수정이 새 오류를 유발
+   - 3번 시도 후에도 같은 오류 지속
+   - 사용자가 중지 요청
 
-5. Show summary:
-   - Errors fixed
-   - Errors remaining
-   - New errors introduced
+5. 요약 표시:
+   - 수정된 오류
+   - 남은 오류
+   - 새로 발생한 오류
 
-Fix one error at a time for safety!
+안전을 위해 한 번에 하나의 오류만 수정!

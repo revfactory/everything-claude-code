@@ -1,45 +1,45 @@
-# Git Workflow
+# Git 워크플로우
 
-## Commit Message Format
+## 커밋 메시지 형식
 
 ```
-<type>: <description>
+<타입>: <설명>
 
-<optional body>
+<선택적 본문>
 ```
 
-Types: feat, fix, refactor, docs, test, chore, perf, ci
+타입: feat, fix, refactor, docs, test, chore, perf, ci
 
-Note: Attribution disabled globally via ~/.claude/settings.json.
+참고: ~/.claude/settings.json에서 전역적으로 어트리뷰션 비활성화됨.
 
-## Pull Request Workflow
+## Pull Request 워크플로우
 
-When creating PRs:
-1. Analyze full commit history (not just latest commit)
-2. Use `git diff [base-branch]...HEAD` to see all changes
-3. Draft comprehensive PR summary
-4. Include test plan with TODOs
-5. Push with `-u` flag if new branch
+PR 생성 시:
+1. 전체 커밋 히스토리 분석 (최신 커밋만이 아님)
+2. `git diff [base-branch]...HEAD`로 모든 변경사항 확인
+3. 포괄적인 PR 요약 작성
+4. TODO가 포함된 테스트 계획 포함
+5. 새 브랜치인 경우 `-u` 플래그로 푸시
 
-## Feature Implementation Workflow
+## 기능 구현 워크플로우
 
-1. **Plan First**
-   - Use **planner** agent to create implementation plan
-   - Identify dependencies and risks
-   - Break down into phases
+1. **먼저 계획**
+   - **planner** 에이전트로 구현 계획 생성
+   - 의존성과 위험 식별
+   - 단계별로 분해
 
-2. **TDD Approach**
-   - Use **tdd-guide** agent
-   - Write tests first (RED)
-   - Implement to pass tests (GREEN)
-   - Refactor (IMPROVE)
-   - Verify 80%+ coverage
+2. **TDD 접근법**
+   - **tdd-guide** 에이전트 사용
+   - 테스트 먼저 작성 (RED)
+   - 테스트 통과하도록 구현 (GREEN)
+   - 리팩토링 (IMPROVE)
+   - 80%+ 커버리지 확인
 
-3. **Code Review**
-   - Use **code-reviewer** agent immediately after writing code
-   - Address CRITICAL and HIGH issues
-   - Fix MEDIUM issues when possible
+3. **코드 리뷰**
+   - 코드 작성 직후 **code-reviewer** 에이전트 사용
+   - CRITICAL과 HIGH 이슈 해결
+   - 가능하면 MEDIUM 이슈도 수정
 
-4. **Commit & Push**
-   - Detailed commit messages
-   - Follow conventional commits format
+4. **커밋 & 푸시**
+   - 상세한 커밋 메시지
+   - 컨벤셔널 커밋 형식 준수

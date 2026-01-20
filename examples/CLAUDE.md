@@ -1,58 +1,58 @@
-# Example Project CLAUDE.md
+# 예시 프로젝트 CLAUDE.md
 
-This is an example project-level CLAUDE.md file. Place this in your project root.
+이것은 예시 프로젝트 레벨 CLAUDE.md 파일입니다. 프로젝트 루트에 배치하세요.
 
-## Project Overview
+## 프로젝트 개요
 
-[Brief description of your project - what it does, tech stack]
+[프로젝트에 대한 간략한 설명 - 무엇을 하는지, 기술 스택]
 
-## Critical Rules
+## 중요 규칙
 
-### 1. Code Organization
+### 1. 코드 구성
 
-- Many small files over few large files
-- High cohesion, low coupling
-- 200-400 lines typical, 800 max per file
-- Organize by feature/domain, not by type
+- 적은 대형 파일보다 많은 작은 파일
+- 높은 응집도, 낮은 결합도
+- 일반적으로 200-400줄, 파일당 최대 800줄
+- 타입별이 아닌 기능/도메인별 구성
 
-### 2. Code Style
+### 2. 코드 스타일
 
-- No emojis in code, comments, or documentation
-- Immutability always - never mutate objects or arrays
-- No console.log in production code
-- Proper error handling with try/catch
-- Input validation with Zod or similar
+- 코드, 주석, 문서에 이모지 금지
+- 항상 불변성 - 객체나 배열을 절대 변경하지 않음
+- 프로덕션 코드에 console.log 금지
+- try/catch로 적절한 오류 처리
+- Zod 또는 유사한 도구로 입력 검증
 
-### 3. Testing
+### 3. 테스팅
 
-- TDD: Write tests first
-- 80% minimum coverage
-- Unit tests for utilities
-- Integration tests for APIs
-- E2E tests for critical flows
+- TDD: 테스트 먼저 작성
+- 최소 80% 커버리지
+- 유틸리티에 단위 테스트
+- API에 통합 테스트
+- 중요 흐름에 E2E 테스트
 
-### 4. Security
+### 4. 보안
 
-- No hardcoded secrets
-- Environment variables for sensitive data
-- Validate all user inputs
-- Parameterized queries only
-- CSRF protection enabled
+- 하드코딩된 시크릿 금지
+- 민감한 데이터에 환경 변수
+- 모든 사용자 입력 검증
+- 파라미터화된 쿼리만 사용
+- CSRF 보호 활성화
 
-## File Structure
+## 파일 구조
 
 ```
 src/
-|-- app/              # Next.js app router
-|-- components/       # Reusable UI components
-|-- hooks/            # Custom React hooks
-|-- lib/              # Utility libraries
-|-- types/            # TypeScript definitions
+|-- app/              # Next.js 앱 라우터
+|-- components/       # 재사용 가능한 UI 컴포넌트
+|-- hooks/            # 커스텀 React 훅
+|-- lib/              # 유틸리티 라이브러리
+|-- types/            # TypeScript 정의
 ```
 
-## Key Patterns
+## 주요 패턴
 
-### API Response Format
+### API 응답 형식
 
 ```typescript
 interface ApiResponse<T> {
@@ -62,39 +62,39 @@ interface ApiResponse<T> {
 }
 ```
 
-### Error Handling
+### 오류 처리
 
 ```typescript
 try {
   const result = await operation()
   return { success: true, data: result }
 } catch (error) {
-  console.error('Operation failed:', error)
-  return { success: false, error: 'User-friendly message' }
+  console.error('작업 실패:', error)
+  return { success: false, error: '사용자 친화적 메시지' }
 }
 ```
 
-## Environment Variables
+## 환경 변수
 
 ```bash
-# Required
+# 필수
 DATABASE_URL=
 API_KEY=
 
-# Optional
+# 선택
 DEBUG=false
 ```
 
-## Available Commands
+## 사용 가능한 커맨드
 
-- `/tdd` - Test-driven development workflow
-- `/plan` - Create implementation plan
-- `/code-review` - Review code quality
-- `/build-fix` - Fix build errors
+- `/tdd` - 테스트 주도 개발 워크플로우
+- `/plan` - 구현 계획 생성
+- `/code-review` - 코드 품질 검토
+- `/build-fix` - 빌드 오류 수정
 
-## Git Workflow
+## Git 워크플로우
 
-- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
-- Never commit to main directly
-- PRs require review
-- All tests must pass before merge
+- 컨벤셔널 커밋: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
+- main에 직접 커밋 금지
+- PR은 리뷰 필요
+- 머지 전 모든 테스트 통과 필수
